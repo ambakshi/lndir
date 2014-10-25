@@ -2,7 +2,7 @@
 /* Create shadow link tree (after X11R4 script of the same name)
    Mark Reinhold (mbr@lcs.mit.edu)/3 January 1990 */
 
-/* 
+/*
 Copyright (c) 1990, 1998 The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
@@ -49,8 +49,15 @@ in this Software without prior written authorization from The Open Group.
 #include "config.h"
 #endif
 
+#ifndef NO_XOPEN
 #include <X11/Xos.h>
 #include <X11/Xfuncproto.h>
+#else
+#include <string.h>
+#define _X_ATTRIBUTE_PRINTF(x,y)
+#define _X_NORETURN
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -115,7 +122,7 @@ mperror (char *s)
 }
 
 
-static int 
+static int
 equivalent(char *lname, char *rname, char **p)
 {
     char *s;
@@ -137,7 +144,7 @@ equivalent(char *lname, char *rname, char **p)
 static int
 dodir (const char *fn,		/* name of "from" directory, either absolute or
 				   relative to cwd */
-       struct stat *fs, 
+       struct stat *fs,
        struct stat *ts,		/* stats for the "from" directory and cwd */
        int rel)			/* if true, prepend "../" to fn before using */
 {
@@ -162,7 +169,7 @@ dodir (const char *fn,		/* name of "from" directory, either absolute or
     else
 	buf[0] = '\0';
     strcat (buf, fn);
-    
+
     if (!(df = opendir (buf))) {
 	msg ("%s: Cannot opendir", buf);
 	return 1;
@@ -179,8 +186,8 @@ dodir (const char *fn,		/* name of "from" directory, either absolute or
 	    continue;
 #ifdef __APPLE__
 	/* Ignore these Mac OS X Finder data files */
-	if (!strcmp(dp->d_name, ".DS_Store") || 
-	    !strcmp(dp->d_name, "._.DS_Store")) 
+	if (!strcmp(dp->d_name, ".DS_Store") ||
+	    !strcmp(dp->d_name, "._.DS_Store"))
 	    continue;
 #endif
 	strcpy (p, dp->d_name);
